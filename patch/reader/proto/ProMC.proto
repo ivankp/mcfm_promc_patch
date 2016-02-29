@@ -1,0 +1,38 @@
+// ProMC event record for MCFM NLO program.
+// See: https://atlaswww.hep.anl.gov/asc/promc/
+// This is a template for Monte Carlo event record based on variable number of bytes
+// Author: 
+// S.Chekanov. chekanov@anl.gov (ANL)
+
+package promc;
+option java_package = "promc.io";
+option java_outer_classname = "ProMC";
+
+message ProMCEvent {
+
+   // Event information
+   message Event {
+         optional int32 Number = 1;      // Number
+         optional int32 Process_ID = 2;  // ID unique signal process id
+         optional float Weight     = 3;  // Global event weight
+         repeated float Info   = 4;      // event info as you want (array) 
+   }
+
+
+  // Particle definition for NLO programs
+  message Particles { 
+    repeated uint32  id=1           [packed=true]; // ID in the generator
+    repeated sint32  pdg_id=2       [packed=true]; // unique integer ID specifying the particle type 
+    repeated sint64  Px=4           [packed=true]; // pX 
+    repeated sint64  Py=5           [packed=true]; // pY 
+    repeated sint64  Pz=6           [packed=true]; // pZ
+    repeated sint64  Energy=3       [packed=true]; // Energy
+   }
+
+     // even record for this event
+     optional Event        event = 1;            // information on event
+     optional Particles    particles = 2;        // information on generator-level particles 
+ 
+ 
+}
+

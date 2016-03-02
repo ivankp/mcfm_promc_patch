@@ -1,0 +1,17 @@
+Installation instructions
+-------------------------------------------------
+1. [Install promc]
+   Go to https://atlaswww.hep.anl.gov/asc/wikidoc/doku.php?id=asc:promc:installation
+   Follow instructions for 'Installation from the source (Linux)'
+
+2. [Get MCFM source]
+   Download source from http://mcfm.fnal.gov/
+   Extract the archive
+   Run ./patch -h to see patching options
+   ./patch /path/to/MCFM-source [options]
+
+3. [Compile MCFM]
+   cd /path/to/MCFM-source
+   Install(_omp)
+   make
+

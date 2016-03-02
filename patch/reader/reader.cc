@@ -72,40 +72,37 @@ int main(int argc, char **argv)
   //cout << "Nr of entries = " << epbook->size() << endl;
 
 
-  for (unsigned int j=0; j<nev; j++){
-  if (epbook->next() !=0) continue;
-  ProMCEvent eve = epbook->get();
+  for (unsigned int j=0; j<nev; ++j) {
+    if (epbook->next() !=0) continue;
+    ProMCEvent eve = epbook->get();
 
 
-  // event information
-  ProMCEvent_Event  *e=eve.mutable_event();
-  //double  weight=e->weight();
+    // event information
+    ProMCEvent_Event  *e=eve.mutable_event();
+    //double  weight=e->weight();
 
 
 
-  // get truth information 
-   ProMCEvent_Particles  *pa=eve.mutable_particles();
+    // get truth information 
+    ProMCEvent_Particles  *pa=eve.mutable_particles();
 
-//   print particles 
-  if (j%1000==0) { 
-     
-     
+    // print particles 
+    if (j%1000==0) { 
       cout << "Event=" << j <<  " Nr of particles=" << pa->pdg_id_size() << endl;
-      for (unsigned int nn=0; nn<e->fdata_size(); nn++){
-       cout << e->fdata(nn) << " ";
+      for (unsigned nn=0, n=e->fdata_size(); nn<n; ++nn) {
+        cout << e->fdata(nn) << " ";
       }
 
       cout << "PDF=";  
-      for (unsigned int nn=0; nn<e->idata_size(); nn++){
-       cout << e->idata(nn) << " ";
+      for (unsigned nn=0, n=e->idata_size(); nn<n; ++nn) {
+        cout << e->idata(nn) << " ";
       }
 
       cout << " " << endl; 
-      for (int i=0; i<pa->pdg_id_size(); i++){
+      for (int i=0; i<pa->pdg_id_size(); ++i) {
         cout << " " <<  pa->pdg_id(i) << " " << pa->px(i)/kEV << " " << pa->py(i)/kEV << " " << pa->pz(i)/kEV << " e=" << pa->energy(i)/kEV << endl; 
       }
-   }
- 
+    }
 
   } // end loop
 

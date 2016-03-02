@@ -101,7 +101,7 @@ cp -v  $PATCH_DIR/run.sh  $MCFM_DIR/Bin/
 
 DIR=`pwd`
 cd $MCFM_DIR/Bin/reader
-ln -s ../../FortPro/src_promc
+ln -s ../../FortPro/src_promc src
 cd $DIR
 
 echo "Done!"

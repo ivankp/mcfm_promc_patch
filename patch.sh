@@ -6,6 +6,7 @@ if [ ! -d "$PATCH_DIR" ]; then
   exit 1
 fi
 
+LHAPDF_PREFIX="`lhapdf-config --prefix 2>/dev/null`"
 LHAPDF_DIR=""
 MAKE_J_FLAG=""
 MCFM_DIR=""
@@ -18,7 +19,7 @@ for i in "$@"; do
     echo "Usage: $0 mcfm-dir [OPTIONS]"
     printf "  --help,-h\t\tprint this help and exit\n"
     printf "  mcfm-dir\t\tlocation of MCFM to patch (required)\n"
-    printf "  --lhapdf\t\t=[${LHAPDF_DIR}] use lhapdf with mcfm\n"
+    printf "  --lhapdf\t\t=[${LHAPDF_PREFIX}] use lhapdf with mcfm\n"
     printf "  --omp\t\tuse omp\n"
     printf "  --make-j\t\t=[4] mcfm install scripts will use make -j\n"
     printf "  --unpatch\t\tcreate unpatch\n"
@@ -26,7 +27,12 @@ for i in "$@"; do
     shift # past argument=value
     ;;
     --lhapdf)
-    LHAPDF_DIR="`lhapdf-config --prefix 2>/dev/null`"
+    if [ -z "${LHAPDF_PREFIX}" ]; then
+      echo 'Could not execute `lhapdf-config --prefix`'
+      echo 'You need to specify LHAPDF directory manually'
+      exit 1
+    fi
+    LHAPDF_DIR=$LHAPDF_PREFIX
     shift # past argument=value
     ;;
     --lhapdf=*)

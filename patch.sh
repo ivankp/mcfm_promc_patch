@@ -60,15 +60,6 @@ for i in "$@"; do
   esac
 done
 
-# PROMC #########################################
-if [ -z "$PROMC" ]; then
-  echo 'PROMC variable not defined'
-  echo 'You must source $PROMC/setup.sh to procede'
-  exit 1
-else
-  echo "PROMC = ${PROMC}"
-fi
-
 # MCFM_DIR ######################################
 if [ -z "${MCFM_DIR}" ]; then
   echo 'MCFM directory not specified'
@@ -78,6 +69,7 @@ else
     echo "Directory ${MCFM_DIR} specified for MCFM location does not exist"
     exit 1
   fi
+  MCFM_DIR=`readlink -f ${MCFM_DIR}`
   echo "MCFM_DIR = ${MCFM_DIR}"
 fi
 
@@ -141,7 +133,7 @@ done
 sed -i "s/^\(USEOMP\) *=.*$/\1 = ${WITH_OMP}/" $MCFM_DIR/makefile
 sed -i '
 /histofin.o \\/a mcfmrun.o \\
-/LIBFLAGS *=.*/a \\nLIBFLAGS += -LFortPro -lFortPro\nLIBFLAGS += -L${PROMC}\/lib -lprotoc -lprotobuf -lprotobuf-lite -lcbook -lz
+/LIBFLAGS *=.*/a \\nLIBFLAGS += -LFortPro -lFortPro\nLIBFLAGS += -L${PROMC}\/lib -lprotoc -lprotobuf -lprotobuf-lite -lcbook -lz -lstdc++
 ' $MCFM_DIR/makefile
 if [ -z "$LHAPDF_DIR" ]; then
   sed -i "s/^\(PDFROUTINES\) *=.*$/\1 = NATIVE/" $MCFM_DIR/makefile
@@ -155,11 +147,7 @@ echo "patched makefile"
 cp -rv $PATCH_DIR/FortPro $MCFM_DIR/
 cp -rv $PATCH_DIR/proto   $MCFM_DIR/Bin/
 cp -rv $PATCH_DIR/reader  $MCFM_DIR/Bin/
-#cp -v  $PATCH_DIR/run.sh  $MCFM_DIR/Bin/
-
-DIR=`pwd`
-cd $MCFM_DIR/Bin/reader
-ln -s ../../FortPro/src_promc src
-cd $DIR
+ln -s ../../FortPro/src_promc $MCFM_DIR/Bin/reader/src
 
 echo "Done!"
+

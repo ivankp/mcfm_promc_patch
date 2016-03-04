@@ -32,6 +32,26 @@
    make
    ```
 
+# Patch script options
+
+`--help,-h`<br>
+Prints short discription of options.
+
+One positional argument is required, which is the path to MCFM installation to be patched.
+
+`--lhapdf`<br>
+If used without a value, the path is assumed to be the string printed by `lhapdf-config --prefix`.<br>
+Can also be used with a value, as in `--lhapdf=/foo/bar`. Note, that this path should lead to the root of lhapdf installation, not the `lib` directory.
+
+`--make-j`<br>
+If used, the calls `make` in mcfm `Install` scripts will be appended with the `-j` flag.
+May be used with a value, as in `--make-j=8`. Without the value the default is 4.
+
+`--unpatch`<br>
+If this flag is passed, an unpatch script will be created in the current directory.
+The unpatch script restore the MCFM to the state before patching if run.
+Running `./patch.sh --unpatch` does *not* unpatch!
+
 # Limitations
 For now, promc output works only with MCFM compiled without omp.
 We've also experienced problems saving promc output for process #1.
@@ -52,25 +72,13 @@ The `proto` directory (or a link to it) in the same directory as the input file 
 The `logfile.txt` file (or a link to it) in the same directory as the input file is needed to attach extra user information.
 By default, the patch makes it a link to the `input.DAT`, to include the generation settings.
 
-# Patch script options
-
-`--help,-h`<br>
-Prints short discription of options.
-
-One positional argument is required, which is the path to MCFM installation to be patched.
-
-`--lhapdf`<br>
-If used without a value, the path is assumed to be the string printed by `lhapdf-config --prefix`.<br>
-Can also be used with a value, as in `--lhapdf=/foo/bar`. Note, that this path should lead to the root of lhapdf installation, not the `lib` directory.
-
-`--make-j`<br>
-If used, the calls `make` in mcfm `Install` scripts will be appended with the `-j` flag.
-May be used with a value, as in `--make-j=8`. Without the value the default is 4.
-
-`--unpatch`<br>
-If this flag is passed, an unpatch script will be created in the current directory.
-The unpatch script restore the MCFM to the state before patching if run.
-Running `./patch.sh --unpatch` does *not* unpatch!
+# Inspecting promc files
+Events and metadata in the output promc files can be viewed using a gui Java program `browser_promc`.
+The program can be downloaded [here](http://atlaswww.hep.anl.gov/asc/promc/download/browser_promc.jar).
+To run the program run:
+```bash
+java -cp ~/browser_promc.jar probrowser.NLO input.promc
+```
 
 # How this works
 `promc` format is a zip file containing events stored as individual

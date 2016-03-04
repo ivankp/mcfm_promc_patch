@@ -16,10 +16,10 @@ libFortPro.a: $(OBJ)
 	ar rcs $@ $^
 
 $(OBJ_FORT): obj/%.o: src/%.cxx | obj
-	g++ -O2 -Wall -fPIC -Isrc -I${PROMC}/include -Isrc_promc -o $@ -c $<
+	g++ -O3 -Wall -fPIC -Isrc -I${PROMC}/include -Isrc_promc -o $@ -c $<
 
 $(OBJ_PRO): obj/%.o: src_promc/%.cc | obj
-	g++ -O2 -Wall -fPIC -Isrc -I${PROMC}/include -Isrc_promc -o $@ -c $<
+	g++ -O3 -Wall -fPIC -Isrc -I${PROMC}/include -Isrc_promc -o $@ -c $<
 	
 obj:
 	mkdir $@

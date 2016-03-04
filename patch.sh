@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATCH_DIR=`sed 's/[^\/]*$//' <<< $0`patch
+PATCH_DIR=`sed 's/[^\/]*$//' <<< $0`FortPro
 if [ ! -d "$PATCH_DIR" ]; then
   echo "Directory $PATCH_DIR does not exist"
   exit 1
@@ -20,7 +20,7 @@ for i in "$@"; do
     printf "  --help,-h\t\tprint this help and exit\n"
     printf "  mcfm-dir\t\tlocation of MCFM to patch (required)\n"
     printf "  --lhapdf\t\t=[${LHAPDF_PREFIX}] use lhapdf with mcfm\n"
-    printf "  --omp\t\tuse omp\n"
+#    printf "  --omp\t\tuse omp\n"
     printf "  --make-j\t\t=[4] mcfm install scripts will use make -j\n"
     printf "  --unpatch\t\tcreate unpatch\n"
     exit
@@ -100,8 +100,8 @@ if [ "$UNPATCH" == "YES" ]; then
   mkdir unpatch
   cp $MCFM_DIR/Install* $MCFM_DIR/makefile $MCFM_DIR/src/User/usercode_f77.f unpatch/
   printf "#!/bin/bash\n
-rm -rf ${MCFM_DIR}/FortPro ${MCFM_DIR}/Bin/proto ${MCFM_DIR}/Bin/reader
-rm -f $MCFM_DIR/src/User/mcfmrun.f
+rm -rf ${MCFM_DIR}/FortPro $MCFM_DIR/src/User/mcfmrun.f
+rm -f $MCFM_DIR/Bin/proto $MCFM_DIR/Bin/logfile.txt
 cp -v unpatch/Install* unpatch/makefile $MCFM_DIR/
 cp -v unpatch/usercode_f77.f $MCFM_DIR/src/User/
 " > unpatch.sh
@@ -109,24 +109,17 @@ cp -v unpatch/usercode_f77.f $MCFM_DIR/src/User/
   echo "created unpatch"
 fi
 
-# add extra source files
-# -----------------------------------------------
-for f in mcfmrun.f usercode_f77.f; do
-  cp -v $PATCH_DIR/mcfm/$f $MCFM_DIR/src/User/
-done
-sed -i "s/MCFM [0-9\.]*/MCFM ${MCFM_VERSION}/g" $MCFM_DIR/src/User/mcfmrun.f
-
 # patch Install scripts
 # -----------------------------------------------
 for f in `find ${MCFM_DIR} -type f -name 'Install*'`; do
-  sed -i "s/^\( *set \)\? *CERNLIB *=.*$/\#CERNLIB=/;
+  sed -i "s/^\( *set \)\? *CERNLIB *=.*$/# CERNLIB=/;
           s/if \[\$\([A-Z]\+\) == ''\]/if [ \"\$\1\" == \"\" ]/;
-          s/^\(echo ''\)$/# Compile FortPro library\ncd FortPro; make; cd ..\n\n\1/;
-          s|\(ln -s \$LHAPDFLIB/PDFsets Bin/PDFsets\)|#\1|" $f
-  if [ -z "$LHAPDF_DIR" ]; then
-    sed -i "s/^\( *set \)\? *LHAPDFLIB *=.*$/\#LHAPDFLIB=/" $f
+          s/^\(echo ''\)$/# Compile FortPro library\ncd FortPro; make; cd ..\n\n\1/" $f
+  if [ -n "$LHAPDF_DIR" ]; then
+    sed -i "s|^\( *set \)\? *LHAPDFLIB *=.*$|LHAPDFLIB=${LHAPDF_DIR}/lib|;
+            s|\(ln -s \$LHAPDFLIB/PDFsets Bin/PDFsets\)|# \1|" $f
   else
-    sed -i "s|^\( *set \)\? *LHAPDFLIB *=.*$|LHAPDFLIB=${LHAPDF_DIR}/lib|" $f
+    sed -i "s/^\( *set \)\? *LHAPDFLIB *=.*$/# LHAPDFLIB=/" $f
   fi
   if [ -n "$MAKE_J_FLAG" ]; then
     sed -i "s/make\b/make -j${MAKE_J_FLAG}/" $f
@@ -148,12 +141,20 @@ else
 fi
 echo "patched makefile"
 
-# copy extra Bin files
+# copy FortPro
 # -----------------------------------------------
-cp -rv $PATCH_DIR/FortPro $MCFM_DIR/
-cp -rv $PATCH_DIR/proto   $MCFM_DIR/Bin/
-cp -rv $PATCH_DIR/reader  $MCFM_DIR/Bin/
-ln -s ../../FortPro/src_promc $MCFM_DIR/Bin/reader/src
+cp -rv $PATCH_DIR $MCFM_DIR/
+sed -i "s/MCFM [0-9\.]*/MCFM ${MCFM_VERSION}/g" $MCFM_DIR/FortPro/src/promcfortran.cxx
+sed -i "s/MCFM [0-9\.]*/MCFM ${MCFM_VERSION}/g" $MCFM_DIR/FortPro/mcfm/mcfmrun.f
+ln -s $MCFM_DIR/FortPro/proto $MCFM_DIR/Bin/proto
+ln -s $MCFM_DIR/Bin/input.DAT $MCFM_DIR/Bin/logfile.txt
+
+# link extra MCFM source files
+# -----------------------------------------------
+for f in mcfmrun.f usercode_f77.f; do
+  rm -f $MCFM_DIR/src/User/$f
+  ln -s $MCFM_DIR/FortPro/mcfm/$f $MCFM_DIR/src/User/$f
+done
 
 echo "Done!"
 

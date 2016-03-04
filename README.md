@@ -1,3 +1,5 @@
+Please, read until the "Limitations" section before proceeding.
+
 # Installation instructions
 
 1. [Install promc library]<br>
@@ -28,7 +30,7 @@
 
    ```bash
    cd /path/to/MCFM-source
-   ./Install[_omp]
+   ./Install
    make
    ```
 
@@ -102,7 +104,7 @@ A few extra compilation instructions are added to the `Install` scripts and the 
 This is done with `sed` commands.
 
 # Credits
-[Sergei Chekanov](https://github.com/chekanov) for designing the [promc](https://github.com/chekanov/ProMC) format and the original implementation code for writing promc ntuples in MCFM.
+[Sergei Chekanov](https://github.com/chekanov) for designing the [promc](https://github.com/chekanov/ProMC) format and the original code for writing promc ntuples in MCFM.
 
 [Kyle Strand](https://github.com/kyletstrand) for the original implementation of [FortPro](https://github.com/kyletstrand/FortranProMC).
 

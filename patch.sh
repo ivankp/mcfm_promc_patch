@@ -100,8 +100,8 @@ if [ "$UNPATCH" == "YES" ]; then
   mkdir unpatch
   cp $MCFM_DIR/Install* $MCFM_DIR/makefile $MCFM_DIR/src/User/usercode_f77.f unpatch/
   printf "#!/bin/bash\n
-rm -rf ${MCFM_DIR}/FortPro $MCFM_DIR/src/User/mcfmrun.f
-rm -f $MCFM_DIR/Bin/proto $MCFM_DIR/Bin/logfile.txt
+rm -vrf ${MCFM_DIR}/FortPro $MCFM_DIR/src/User/mcfmrun.f
+rm -vf $MCFM_DIR/Bin/proto $MCFM_DIR/Bin/logfile.txt
 cp -v unpatch/Install* unpatch/makefile $MCFM_DIR/
 cp -v unpatch/usercode_f77.f $MCFM_DIR/src/User/
 " > unpatch.sh
